@@ -359,7 +359,7 @@ gpujpeg_table_huffman_decoder_init(struct gpujpeg_table_huffman_decoder* table, 
 }
 
 /* Documented at declaration */
-void
+int
 gpujpeg_table_huffman_decoder_compute(struct gpujpeg_table_huffman_decoder* table, struct gpujpeg_table_huffman_decoder* d_table)
 {
     // Figure C.1: make table of Huffman code length for each symbol
@@ -427,5 +427,7 @@ gpujpeg_table_huffman_decoder_compute(struct gpujpeg_table_huffman_decoder* tabl
     }
     
     // Copy table to device memory
-    cudaMemcpy(d_table, table, sizeof(struct gpujpeg_table_huffman_decoder), cudaMemcpyHostToDevice);
+    GPUJPEG_CHECK(cudaMemcpy(d_table, table, sizeof(struct gpujpeg_table_huffman_decoder), cudaMemcpyHostToDevice), return -1);
+
+    return 0;
 }
